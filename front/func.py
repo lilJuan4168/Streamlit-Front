@@ -1,73 +1,75 @@
 import streamlit as st
 from func_api import *
 import json
-from time import sleep
 import pandas as pd
 import numpy as np
 from random import randint
+import streamlit.components.v1 as components
 
 #Functions related to the flow and work areas of the webapp
 
 def login():
     with st.form("Login"):
         st.write("<h3>Log in</h3>", unsafe_allow_html=True)
-        username = st.text_input("UserName")
-        password = st.text_input("Password", type="password")
+        #username = st.text_input("UserName")
+        #password = st.text_input("Password", type="password")
         my_token = st.text_input("Bearer Token", type="password")
         submitted = st.form_submit_button('Login')
-        submitted2 = st.form_submit_button("Register")  
+        #submitted2 = st.form_submit_button("Register")  
     if len(my_token) != 0 and submitted:
        st.success("Log in completed", icon="✅")
        st.write("Token ended in:", my_token[-4:])
+       global user
+       user = get_user(my_token)
     elif len(my_token) == 0 and submitted:
        st.error('Empy field', icon="🚨")
 
 
 def metrics():
-    st.write("<h1 align='center'>Metrics</h1>", unsafe_allow_html=True)
+    st.title("Metrics")
+    cat_dic_var = {"Accesorios para Vehículos": "MLA5725", "Agro": "MLA1512", "Alimentos y Bebidas": "MLA1403",
+                   "Animales y Mascotas": "MLA1071", "Antigüedades y Colecciones": "MLA1367",
+                   "Arte, Librería y Mercería": "MLA1368", "Autos, Motos y Otros": "MLA1743",
+                   "Bebés": "MLA1384", "Belleza y Cuidado Personal": "MLA1246",
+                   "Cámaras y Accesorios": "MLA1039", "Celulares y Teléfonos": "MLA1051",
+                   "Computación": "MLA1648", "Consolas y Videojuegos": "MLA1144",
+                   "Construcción": "MLA1500", "Deportes y Fitness": "MLA1276",
+                   "Electrodomésticos y Aires Ac.": "MLA5726", "Electrónica, Audio y Video": "MLA1000",
+                   "Entradas para Eventos": "MLA2547", "Herramientas": "MLA407134",
+                   "Hogar, Muebles y Jardín": "MLA1574", "Industrias y Oficinas": "MLA1499",
+                   "Inmuebles": "MLA1459", "Instrumentos Musicales": "MLA1182",
+                   "Joyas y Relojes": "MLA3937", "Juegos y Juguetes": "MLA1132",
+                   "Libros, Revistas y Comics": "MLA3025", "Música, Películas y Series": "MLA1168",
+                   "Ropa y Accesorios": "MLA1430", "Salud y Equipamiento Médico": "MLA409431",
+                   "Servicios": "MLA1540", "Souvenirs, Cotillón y Fiestas": "MLA9304",
+                   "Otras categorías": "MLA1953"}
+    
+    options = st.selectbox("Categories",cat_dic_var.keys())
     col1, col2 = st.columns([0.8, 0.2])
-    cat_dic_var = {
-  "Accesorios para Vehículos": "MLA5725",
-  "Agro": "MLA1512",
-  "Alimentos y Bebidas": "MLA1403",
-  "Animales y Mascotas": "MLA1071",
-  "Antigüedades y Colecciones": "MLA1367",
-  "Arte, Librería y Mercería": "MLA1368",
-  "Autos, Motos y Otros": "MLA1743",
-  "Bebés": "MLA1384",
-  "Belleza y Cuidado Personal": "MLA1246",
-  "Cámaras y Accesorios": "MLA1039",
-  "Celulares y Teléfonos": "MLA1051",
-  "Computación": "MLA1648",
-  "Consolas y Videojuegos": "MLA1144",
-  "Construcción": "MLA1500",
-  "Deportes y Fitness": "MLA1276",
-  "Electrodomésticos y Aires Ac.": "MLA5726",
-  "Electrónica, Audio y Video": "MLA1000",
-  "Entradas para Eventos": "MLA2547",
-  "Herramientas": "MLA407134",
-  "Hogar, Muebles y Jardín": "MLA1574",
-  "Industrias y Oficinas": "MLA1499",
-  "Inmuebles": "MLA1459",
-  "Instrumentos Musicales": "MLA1182",
-  "Joyas y Relojes": "MLA3937",
-  "Juegos y Juguetes": "MLA1132",
-  "Libros, Revistas y Comics": "MLA3025",
-  "Música, Películas y Series": "MLA1168",
-  "Ropa y Accesorios": "MLA1430",
-  "Salud y Equipamiento Médico": "MLA409431",
-  "Servicios": "MLA1540",
-  "Souvenirs, Cotillón y Fiestas": "MLA9304",
-  "Otras categorías": "MLA1953"
-}
     nuevo_dict = {v: k for k, v in cat_dic_var.items()}
-    with col1:
-        st.write(nuevo_dict)
-    with col2:
-        st.metric(label="Dolar Blue", value="900$", delta="30%")
-        df = pd.DataFrame( {"Productos mas buscados":["iphone 14", "rxt 3080", "muñeco de milei", "auriculares sony wh 1000 xm4"]}, index=[1,2,3,4])
-        st.table(df)
-
+    
+    #with col2:
+    #    st.metric(label="Dolar Blue", value="900$", delta="30%")
+    #    df = pd.DataFrame( {"Productos mas buscados":["iphone 14", "rxt 3080", "muñeco de milei", "auriculares sony wh 1000 xm4"]}, index=[1,2,3,4])
+    #    st.table(df)
+    st.divider()
+    st.write("Category in Tendency")
+    data = get_category_table().json()
+    df = pd.DataFrame(data)
+    st.bar_chart(df.set_index("categorias")["cant_items"], use_container_width=True, color="#ffaa0088", width=800, height=600)
+    
+    st.divider()
+    st.write("AvgPricePerCategory")
+    data2 = get_avgPricePerCategory()
+    df2 = pd.DataFrame(data2)
+    #st.write(df2)
+    #st.write(df2['categoria'].unique())
+    genre = st.radio(
+    "What Category?",
+    df2['categoria'].unique()) 
+    if genre:
+        df2b = df2[df2['categoria']==genre]
+        st.line_chart(df2b.set_index("fecha")["precio_promedio"], use_container_width=True, color='#00f900')
 
 def favorites():
     #st.write("in development")
