@@ -1,3 +1,7 @@
 venv
 front/__pycache__
 test.py
+node_modules
+package-lock.json
+package.json
+tradingView
