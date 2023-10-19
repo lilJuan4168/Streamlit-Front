@@ -6,6 +6,9 @@ import numpy as np
 from random import randint
 from datetime import datetime
 
+
+#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 #Functions related to the flow and work areas of the webapp
 
 def favorites():
@@ -47,8 +50,14 @@ def more_details(item_id, title, price, quantity, seller_nickname, img, item_wor
         st.write("Id:", item_id)
         st.write("Seller Nickname:", seller_nickname)
         st.image(img, width=90)
-        chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
-        st.line_chart(chart_data)
+        
+        dolar = dolar_price(20)
+        delta = round(((dolar['blue'][0] - dolar['blue'][1])/dolar['blue'][1]) * 100)
+        st.metric(label="Dolar Blue", value=str(dolar['blue'][0])+"$", delta=str(delta)+"%"+"/24hs")
+        data = pd.DataFrame(dolar)
+        #st.write(data)  
+        st.line_chart(data.set_index("fechas"))
+
     with col2:
         st.button("add to favorites", key="fav", use_container_width=True,
                     )
@@ -121,73 +130,74 @@ def show_data2(item):
                     st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
 
 
-
-
 #This function gets a word to be search and displays the results in a list
 def show_data(item):
     avg_price = []
     data = search_products(item)
-    #with open("front/json/search_results.json", "w") as dt:
-    #    json.dump(data, dt, indent=4)
     #data = data_read()
     last_number = 0
     total = len(data) 
     per_pag = total // 2
     st.write("Total items:", total)
-    #st.write(item)
     pag1, pag2 = st.tabs(["pag1", "pag2"])
     with pag1:
         for i in range(0, per_pag):
-            col1, col2 = st.columns([0.8, 0.2])
-            with col1:
-                item_id = data[i]["product_id"]
-                title = data[i]["title"]
-                price = data[i]["price"]
-                quantity = data[i]["available_quantity"]
-                seller_nickname = data[i]["seller_nickname"]
-                img = data[i]['thumbnail']
-                permalink = data[i]['permalink']
-                st.write(f"<h4>{title}</h4>", unsafe_allow_html=True)
-                st.write("Price $(ars):", float(price))
-                st.write("Quantity:", int(quantity))
-                st.write("Id:", item_id)
-                st.write("Seller Nickname:", seller_nickname)
-                st.image(img, width=90)
-                avg_price.append(float(price))
-            with col2:
-                st.button("Add to Favorites", key= item_id + str(randint(0,3000)), on_click=addFavorite ,args=([item_id]),use_container_width=True) 
-                st.button("More Details", key= item_id + str(randint(0,250)), use_container_width=True,
+            try:
+                col1, col2 = st.columns([0.8, 0.2])
+                with col1:
+                    item_id = data[i]["product_id"]
+                    title = data[i]["title"]
+                    price = data[i]["price"]
+                    quantity = data[i]["available_quantity"]
+                    seller_nickname = data[i]["seller_nickname"]
+                    img = data[i]['thumbnail']
+                    permalink = data[i]['permalink']
+                    st.write(f"<h4>{title}</h4>", unsafe_allow_html=True)
+                    st.write("Price $(ars):", float(price))
+                    st.write("Quantity:", int(quantity))
+                    st.write("Id:", item_id)
+                    st.write("Seller Nickname:", seller_nickname)
+                    st.image(img, width=90)
+                    avg_price.append(float(price))
+                with col2:
+                    st.button("Add to Favorites", key= item_id + str(randint(0,3000)), on_click=addFavorite ,args=([item_id]),use_container_width=True) 
+                    st.button("More Details", key= item_id + str(randint(0,250)), use_container_width=True,
                              on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
-                st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)   
-            last_number = i
-            st.divider()
+                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)   
+                last_number = i
+                st.divider()
+            except Exception as e:
+                st.write(str(e))
         st.write("max item:",last_number +1)
+    
     with pag2:
-        for i in range(last_number +1, total):
-            col1, col2 = st.columns([0.8, 0.2])
-            with col1:
-                item_id = data[i]['product_id']
-                title = data[i]['title']
-                price = data[i]['price']
-                quantity = data[i]["available_quantity"]
-                seller_nickname = data[i]['seller_nickname']
-                img = data[i]['thumbnail']
-                permalink = data[i]['permalink']
-                st.write(f"<h4>{title}</h4>", unsafe_allow_html=True)
-                st.write("Price $(ars):", price)
-                st.write("Quantity:", quantity)
-                st.write("Id:", item_id)
-                st.write("Seller Nickname:", seller_nickname)
-                st.image(img, width=90)
-            with col2:
-                st.button("Add to Favorites", key= item_id + str(randint(3500, 4000)), on_click=addFavorite,use_container_width=True)       
-                st.button("More Details", key= item_id + str(randint(500,550)) + permalink, use_container_width=True,
-                          on_click=more_details, 
-                          args=(item_id, title, price, quantity, seller_nickname, img, item))
-                st.link_button("Go to MercadoLibre", permalink, use_container_width=True)
-                st.metric(label="Average Price", value="null$", delta="1%")
-            last_number = i
-        st.divider()
+        for i in range(per_pag, total):
+            try:
+                col1, col2 = st.columns([0.8, 0.2])
+                with col1:
+                    item_id = data[i]["product_id"]
+                    title = data[i]["title"]
+                    price = data[i]["price"]
+                    quantity = data[i]["available_quantity"]
+                    seller_nickname = data[i]["seller_nickname"]
+                    img = data[i]['thumbnail']
+                    permalink = data[i]['permalink']
+                    st.write(f"<h4>{title}</h4>", unsafe_allow_html=True)
+                    st.write("Price $(ars):", float(price))
+                    st.write("Quantity:", int(quantity))
+                    st.write("Id:", item_id)
+                    st.write("Seller Nickname:", seller_nickname)
+                    st.image(img, width=90)
+                    avg_price.append(float(price))
+                with col2:
+                    st.button("Add to Favorites", key= item_id + str(randint(0,3000)), on_click=addFavorite ,args=([item_id]),use_container_width=True) 
+                    st.button("More Details", key= item_id + str(randint(0,250)), use_container_width=True,
+                             on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
+                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)   
+                last_number = i
+                st.divider()
+            except Exception as e:
+                st.write(str(e))
         st.write("max item:",last_number +1)
 
 

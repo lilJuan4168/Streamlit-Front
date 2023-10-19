@@ -21,64 +21,68 @@ if option == "Publish a Product":
 if option == "My Inventory":
     st.write("Total:", "0")
     pag1, pag2, pag3 = st.tabs(["pag1", "pag2", "pag3"])
-
+    components.html("""
+                     
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+  {
+  "symbols": [
+    [
+      "Apple",
+      "AAPL|1D"
+    ],
+    [
+      "Google",
+      "GOOGL|1D"
+    ],
+    [
+      "Microsoft",
+      "MSFT|1D"
+    ]
+  ],
+  "chartOnly": false,
+  "width": 1000,
+  "height": 500,
+  "locale": "en",
+  "colorTheme": "dark",
+  "autosize": false,
+  "showVolume": false,
+  "showMA": false,
+  "hideDateRanges": false,
+  "hideMarketStatus": false,
+  "hideSymbolLogo": false,
+  "scalePosition": "right",
+  "scaleMode": "Normal",
+  "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+  "fontSize": "10",
+  "noTimeScale": false,
+  "valuesTracking": "1",
+  "changeMode": "price-and-percent",
+  "chartType": "area",
+  "maLineColor": "#2962FF",
+  "maLineWidth": 1,
+  "maLength": 9,
+  "lineWidth": 2,
+  "lineType": 0,
+  "dateRanges": [
+    "1d|1",
+    "1m|30",
+    "3m|60",
+    "12m|1D",
+    "60m|1W",
+    "all|1M"
+  ]
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+ 
+""", width=600, height=600, scrolling=True)
+    
 if option == "My Competitors":
     #with open("front/json/user.json", 'r') as js:
     #    data = json.load(js)
-    components.html(""" 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gráfico de TradingView</title>
-    
-    <!-- Agregar enlace a la biblioteca lightweight-charts -->
-    <script src="ruta-a-lightweight-charts.min.js"></script>
-</head>
-<body>
-    <div id="container" style="width: 100%; height: 500px;"></div>
-
-    <script>
-        const chartOptions = {
-            layout: {
-                textColor: 'black',
-                background: {
-                    type: 'solid',
-                    color: 'white'
-                }
-            }
-        };
-
-        const chart = LightweightCharts.createChart(document.getElementById('container'), chartOptions);
-
-        const areaSeries = chart.addAreaSeries({
-            lineColor: '#2962FF',
-            topColor: '#2962FF',
-            bottomColor: 'rgba(41, 98, 255, 0.28)',
-        });
-
-        areaSeries.setData([
-            { time: '2018-12-22', value: 32.51 },
-            { time: '2018-12-23', value: 31.11 },
-            // ... Otros datos ...
-        ]);
-
-        const candlestickSeries = chart.addCandlestickSeries({
-            upColor: '#26a69a',
-            downColor: '#ef5350',
-            borderVisible: false,
-            wickUpColor: '#26a69a',
-            wickDownColor: '#ef5350',
-        });
-
-        candlestickSeries.setData([
-            { time: '2018-12-22', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
-            { time: '2018-12-23', open: 45.12, high: 53.90, low: 45.12, close: 48.09 },
-            // ... Otros datos ...
-        ]);
-
-        chart.timeScale().fitContent();
-    </script>
-</body>
-</html>
-               
- """, width=600, height=600, scrolling=True)
+    st.write("In development")

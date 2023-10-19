@@ -152,5 +152,7 @@ if st.button("Play Snake Game", use_container_width=True):
 </html>
 
    """, width=500, height=500)
+
+    
 if st.button("Restart", use_container_width=True):
     st.rerun()

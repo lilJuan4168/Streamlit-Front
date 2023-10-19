@@ -19,14 +19,10 @@ st.sidebar.image("img/bocanblack.webp")
 st.title("Find what you are looking for!")
 item = st.text_input('', placeholder="eg: iphone 14 pro max")          
 submitted = st.button('Search', key="src0")
-if item:
-    if len(item) != 0:
-       show_data(item)
-    else:
-       st.warning("Empty Field")
-if submitted:
-    if len(item) != 0:
-       show_data(item)
-    else:
-       st.warning("Empty Field")
+if len(item) != 0:
+    show_data(item)
+elif submitted and len(item) != 0:
+    show_data(item)
+elif submitted and len(item) == 0:
+    st.warning("Empty Field")
 
