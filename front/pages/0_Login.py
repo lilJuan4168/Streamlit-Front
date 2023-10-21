@@ -4,7 +4,7 @@ import json
 
 st.sidebar.image("img/bocanblack.webp")
 
-st.title("login")
+st.title("Login")
 with st.expander("Your products are waiting for you..."):
     with st.form("Login"):
         username = st.text_input("UserName")
@@ -16,13 +16,14 @@ with st.expander("Your products are waiting for you..."):
            user = get_user_cached()
            st.success("Login Completed User:", user['credentials']['nickname'])
         except Exception as e:
-            st.warning(str(e))
+           st.success(f"Login Completed User: {user['credentials']['nickname']}")
+           st.toast(f"welcome {user['credentials']['nickname']}")
     elif submitted2 and (len(username) == 0 or len(password) == 0):
         st.warning("There is an EMPTY FIELD")
 
 
 st.title("Register")
-with st.expander("join us for more functionality..."):
+with st.expander("Join us for more functionality..."):
     with st.form("Register"):
         client_id =  st.text_input("Client ID")
         client_secret = st.text_input("Client Secret")
@@ -32,7 +33,7 @@ with st.expander("join us for more functionality..."):
         submitted = st.form_submit_button('Register')  
     if submitted and my_token and refresh_token and my_password and client_id and client_secret:
         st.success("Registration Completed, Remember your NICKNAME and PASSWORD to login!", icon="✅")
-        user = send_registration(my_password, my_token, refresh_token)
+        user = send_registration(my_password, my_token, refresh_token, client_id, client_secret)
         try:
            st.title(f"Hello!", user["ml_data"]["name"])
            st.write("Nickname:",user["ml_data"]['nickname'])

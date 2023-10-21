@@ -3,8 +3,10 @@
     "credentials": {
         "user_id": 70815489,
         "nickname": "DARW21",
-        "access_token": "APP_USR-3302019933717485-101811-999ae7dbc4222cda1b3637dcdee8f44b-70815489",
-        "refresh_token": "TG-652ff674e812e80001ad6a18-70815489",
-        "registration_date": "2023-10-18 14:31"
+        "access_token": "APP_USR-3302019933717485-102012-3bbf9347408b5b7663bf91f665b75bb8-70815489",
+        "refresh_token": "TG-6532b098f3d43100017d7c7b-70815489",
+        "client_id": "3302019933717485",
+        "client_secret": "ZrS6BCcB0v9FAaboY2OnOb2RKgRdDR1q",
+        "registration_date": "2023-10-19 16:50"
     }
 }

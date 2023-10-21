@@ -7,23 +7,16 @@ from random import randint
 from datetime import datetime
 
 
-#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 #Functions related to the flow and work areas of the webapp
 
-def favorites():
-    #st.write("in development")
-    #st.snow()
-    sidebar = st.sidebar
-# Crear una carpeta en el panel lateral
-    folder_name = sidebar.text_input("Nombre de la carpeta:")
-# Verificar si se ha ingresado un nombre de carpeta
-    if folder_name:
-    # Agregar elementos a la carpeta
-       item_name = st.text_input("Nombre del elemento:")
-       if item_name:
-          sidebar.markdown(f"- {folder_name}/{item_name}")
 
+def read_categories():
+    # Abrir json
+    file = open('front/json/categories.json')
+    # Devolver diccionario
+    category_dict = json.load(file)
+    file.close()
+    return category_dict
 
 def about_us():
     st.write("<h1 align='center'>Mercado Track Remastered 📈</h1>", unsafe_allow_html=True)
@@ -41,29 +34,45 @@ def about_us():
        st.image('img/mertrack.webp', use_column_width=True)
 
 
-def more_details(item_id, title, price, quantity, seller_nickname, img, item_word, avg_price):
+def more_details(item_id, title, price, quantity, seller_nickname, img, item_word=None, avg_price="optional", historic=[], permalink = None):
     col1, col2 = st.columns([0.8, 0.2])
+    dolar = dolar_price(20)
+    dol = pd.DataFrame(dolar)
+    hist = pd.DataFrame(historic)
     with col1:
-        st.write(title)
-        st.write("Price $(ars):", price)
-        st.write("Quantity:", quantity)
-        st.write("Id:", item_id)
-        st.write("Seller Nickname:", seller_nickname)
-        st.image(img, width=90)
+        try:
+            st.write(title)
+            st.write("Price $(ars):", price)
+            st.write("Id:", item_id)
+            st.write("Seller Nickname:", seller_nickname)
+            update_quantity = get_available_quantity(permalink)["stock"]
+            st.write("Quantity:", update_quantity)
+            st.image(img, width=90)
         
-        dolar = dolar_price(20)
-        delta = round(((dolar['blue'][0] - dolar['blue'][1])/dolar['blue'][1]) * 100)
-        st.metric(label="Dolar Blue", value=str(dolar['blue'][0])+"$", delta=str(delta)+"%"+"/24hs")
-        data = pd.DataFrame(dolar)
-        #st.write(data)  
-        st.line_chart(data.set_index("fechas"))
+            dolar = dolar_price(20)
+            delta = round(((dolar['blue'][0] - dolar['blue'][1])/dolar['blue'][1]) * 100)
+            st.metric(label="Dolar Blue", value=str(dolar['blue'][0])+"$", delta=str(delta)+"%"+"/24hs")
+            #merged = dol.merge(hist, how="outer", on="date")
+            #merged['priceUSD'] = merged['price']/merged['blue']
+            st.write("Historic Price")  
+            st.line_chart(hist[['date', 'price']].set_index("date"), color=["#11f708"])
+            st.divider()
+            st.write("Historic Dolar")  
+            st.line_chart(dol.set_index("date"), color=["#260be6", "#e40a0d"])
+        except Exception as e:
+            st.warning("Not Historic Data")
+            st.write("Historic Dolar")  
+            st.line_chart(dol.set_index("date"), color=["#260be6", "#e40a0d"])
 
     with col2:
         st.button("add to favorites", key="fav", use_container_width=True,
                     )
         back = st.button("Go to Products List", key="back",on_click=show_data, args=([item_word]), use_container_width=True)
-        st.metric(label="Average Price", value=round(sum(avg_price)/25,2), delta="1%")
-
+        try:
+           st.metric(label="Average Price", value=round(sum(avg_price)/25,2), delta="1%")
+        except:
+            pass
+        
 def show_data2(item):
     avg_price = []
     data = search_products(item)
@@ -102,6 +111,10 @@ def show_data2(item):
                           on_click=more_details, 
                           args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
                     st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
+                    if st.button("Save to a Folder", use_container_width=True):
+                        with st.form("save"):
+                            fname = st.text_input("New Folder Name")
+                            st.form_submit_button("submit")
             last_number += 1
             st.write(last_number)    
         else:
@@ -128,20 +141,21 @@ def show_data2(item):
                           on_click=more_details, 
                           args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
                     st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
-
+                    if st.button("Save to a Folder", use_container_width=True):
+                        with st.form("save"):
+                            fname = st.text_input("New Folder Name")
+                            st.form_submit_button("submit")
 
 #This function gets a word to be search and displays the results in a list
 def show_data(item):
-    avg_price = []
-    data = search_products(item)
-    #data = data_read()
-    last_number = 0
-    total = len(data) 
-    per_pag = total // 2
-    st.write("Total items:", total)
     pag1, pag2 = st.tabs(["pag1", "pag2"])
     with pag1:
-        for i in range(0, per_pag):
+        avg_price = []
+        data = search_products(item, "1")
+        #data = data_read()
+        last_number = 0 
+        st.write("Total items:", 50)
+        for i in range(0, 25):
             try:
                 col1, col2 = st.columns([0.8, 0.2])
                 with col1:
@@ -152,6 +166,7 @@ def show_data(item):
                     seller_nickname = data[i]["seller_nickname"]
                     img = data[i]['thumbnail']
                     permalink = data[i]['permalink']
+                    historic = data[i]['history']
                     st.write(f"<h4>{title}</h4>", unsafe_allow_html=True)
                     st.write("Price $(ars):", float(price))
                     st.write("Quantity:", int(quantity))
@@ -160,18 +175,28 @@ def show_data(item):
                     st.image(img, width=90)
                     avg_price.append(float(price))
                 with col2:
-                    st.button("Add to Favorites", key= item_id + str(randint(0,3000)), on_click=addFavorite ,args=([item_id]),use_container_width=True) 
-                    st.button("More Details", key= item_id + str(randint(0,250)), use_container_width=True,
-                             on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
-                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)   
+                    st.button("Add to Favorites", key= item_id, on_click=addFavorite ,args=([item_id]),use_container_width=True) 
+                    st.button("More Details", key= item_id + str(i), use_container_width=True,
+                             on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price, historic,permalink)) 
+                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
+                    if st.button("Save to a Folder",key= seller_nickname + str(i), use_container_width=True):
+                        with st.form("save"):
+                            fname = st.text_input("New Folder Name")
+                            st.form_submit_button("submit")   
                 last_number = i
                 st.divider()
             except Exception as e:
-                st.write(str(e))
+                pass
+                #st.write(str(e))
         st.write("max item:",last_number +1)
     
     with pag2:
-        for i in range(per_pag, total):
+        avg_price = []
+        data = search_products(item, "2")
+        #data = data_read()
+        last_number = 0 
+        st.write("Total items:", 50)
+        for i in range(0, 25):
             try:
                 col1, col2 = st.columns([0.8, 0.2])
                 with col1:
@@ -190,15 +215,19 @@ def show_data(item):
                     st.image(img, width=90)
                     avg_price.append(float(price))
                 with col2:
-                    st.button("Add to Favorites", key= item_id + str(randint(0,3000)), on_click=addFavorite ,args=([item_id]),use_container_width=True) 
-                    st.button("More Details", key= item_id + str(randint(0,250)), use_container_width=True,
-                             on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price)) 
-                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)   
+                    st.button("Add to Favorites", key= item_id, on_click=addFavorite ,args=([item_id]),use_container_width=True) 
+                    st.button("More Details", key= item_id + str(i), use_container_width=True,
+                             on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price, historic)) 
+                    st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
+                    if st.button("Save to a Folder", key=seller_nickname + str(i),use_container_width=True):
+                        with st.form("save"):
+                            fname = st.text_input("New Folder Name")
+                            st.form_submit_button("submit")   
                 last_number = i
                 st.divider()
             except Exception as e:
                 st.write(str(e))
-        st.write("max item:",last_number +1)
+        st.write("max item:",25)
 
 
 def get_categories():
