@@ -131,7 +131,7 @@ def hash_password(password):
     hashed_password = hashlib.sha256(salt + password.encode()).hexdigest()
     return hashed_password
 
-def folders(user_id:str, action:str, fname:str="optional", item_id:str="optional2"):
+def folders(user_id:str, action:str, fname:str="optional", item_id:str=None):
     headers = {'Content-Type': 'application/json'}
     body = {
             "user_id": user_id,

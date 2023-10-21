@@ -179,10 +179,19 @@ def show_data(item):
                     st.button("More Details", key= item_id + str(i), use_container_width=True,
                              on_click=more_details, args=(item_id, title, price, quantity, seller_nickname, img, item, avg_price, historic,permalink)) 
                     st.link_button("Go to MercadoLibre",permalink ,use_container_width=True)
-                    if st.button("Save to a Folder",key= seller_nickname + str(i), use_container_width=True):
-                        with st.form("save"):
-                            fname = st.text_input("New Folder Name")
-                            st.form_submit_button("submit")   
+                    try:
+                        with st.expander("Save in Folder"):
+                            user = get_user_cached()
+                            user_id = user['credentials']['user_id']
+                            myfolders = folders(user_id=user_id, action="list")
+                            options = st.multiselect("Select", options=[x for x in myfolders['message'] if x != "favorite"], key=permalink + str(i))
+                            if st.button("Save in Selected", key=seller_nickname + str(i)):
+                                for item in options:
+                                    msg = folders(user_id=user_id, action="insert", fname=item, item_id=item_id)
+                                    st.toast(msg)
+                                    st.success("Completed")
+                    except Exception as e:
+                        st.write(str(e))   
                 last_number = i
                 st.divider()
             except Exception as e:

@@ -15,9 +15,13 @@ with st.form("Create a Folder"):
     fname = st.text_input("Folder Name")
     send = st.form_submit_button("Create Folder")
 if send:
-    x = folders(user_id, "create", fname)
-    st.toast(x['message'])
-    st.success("Completed")
+    x = folders(user_id=user_id, action="create", fname=fname, item_id="none")
+    msg = x['message']
+    if msg:
+       st.toast(x)
+       st.success("Completed")
+    else:
+        st.warning(f"Error: {msg}")
 
 myfolders = folders(user_id=user['credentials']['user_id'], action="list")
 with st.expander("Delete a Folder", expanded=True):
@@ -76,7 +80,12 @@ with st.expander("My Favorites"):
 for folderName in myfolders['message']:
     if folderName != "favorite":
         with st.expander(folderName):
-           st.write("xdxd")   
+            try:
+                user = get_user_cached()
+                data = get_favorites(user['credentials']['user_id'], folderName)
+                st.write(data)
+            except Exception as e:
+               st.warning(str(e))   
 
 #x = st.button("cache")
 #if x:
