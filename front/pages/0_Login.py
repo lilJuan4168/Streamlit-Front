@@ -2,7 +2,6 @@ import streamlit as st
 from func_api import send_registration, get_user_cached, login
 import json
 
-st.sidebar.image("img/bocanblack.webp")
 
 st.title("Login")
 with st.expander("Your products are waiting for you..."):

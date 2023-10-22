@@ -5,7 +5,6 @@ import streamlit.components.v1 as components
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.sidebar.image("img/bocanblack.webp")
 
 st.title("Metrics")
     

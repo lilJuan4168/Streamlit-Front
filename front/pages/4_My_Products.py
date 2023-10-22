@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 from time import sleep
 
 st.title("My Products")
-st.sidebar.image("img/bocanblack.webp")
+
 
 option = st.selectbox("Options", ["My Inventory", "Publish a Product", "My Competitors"])
 if option == "Publish a Product":

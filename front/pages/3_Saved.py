@@ -5,7 +5,6 @@ from func import more_details
 from random import randint
 from time import sleep
 
-st.sidebar.image("img/bocanblack.webp")
 
 st.title("My Saved")
 user = get_user_cached()

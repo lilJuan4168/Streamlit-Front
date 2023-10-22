@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
-st.sidebar.image("img/bocanblack.webp")
 
 st.write("In development... play a game in the meanwhile")
 if st.button("Play Snake Game", use_container_width=True):

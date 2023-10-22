@@ -1,12 +1,12 @@
 {
     "status": "OK",
     "credentials": {
-        "user_id": 70815489,
-        "nickname": "DARW21",
-        "access_token": "APP_USR-3302019933717485-102012-3bbf9347408b5b7663bf91f665b75bb8-70815489",
-        "refresh_token": "TG-6532b098f3d43100017d7c7b-70815489",
+        "user_id": 123456,
+        "nickname": "YOUR USER",
+        "access_token": "PRIVATE",
+        "refresh_token": "PRIVATE",
         "client_id": "3302019933717485",
-        "client_secret": "ZrS6BCcB0v9FAaboY2OnOb2RKgRdDR1q",
+        "client_secret": "UNKNOWN",
         "registration_date": "2023-10-19 16:50"
     }
 }

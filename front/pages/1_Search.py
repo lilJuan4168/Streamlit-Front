@@ -14,7 +14,6 @@ st.set_page_config(
     }
 )
 
-st.sidebar.image("img/bocanblack.webp")
 
 st.title("Find what you are looking for!")
 item = st.text_input('', placeholder="eg: iphone 14 pro max")          
