@@ -10,4 +10,4 @@ pip install -r ./front/requirements.txt
 streamlit run ./front/Home.py
 </pre>
 
-[![Alt text](https://img.youtube.com/vi/configuroweb/0.jpg)](https://www.youtube.com/watch?v=wSdT-SArM2Q)
+[![Alt text](https://img.youtube.com/vi/configuroweb/0.jpg)](https://youtu.be/wSdT-SArM2Q?si=qZgqhhS-JgjLh2ov)
