@@ -1,5 +1,8 @@
 <h1 align="center">MercadoLibre Analysis Tool</h1>
 
+<h2>Introduction</h2>
+This is a frontend made in python using streamlit module, It was used only for <b>testing</b>, as a backend there are aws services like: APIgateway, lambda, RDS, S3, eventBridge.
+
 <h2>Deployment</h2>
 <pre>
 #create a virtual enviroment
@@ -10,11 +13,6 @@ pip install -r ./front/requirements.txt
 streamlit run ./front/Home.py
 </pre>
 
-[<img src="https://i.ytimg.com/vi/Hc79sDi3f0U/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=wSdT-SArM2Q "Now in Android: 55")
+[<img src="img/icon.png" width="50%">](https://youtu.be/HtO1ttkC9fo "Demo")
 
-<html>
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/wSdT-SArM2Q?si=Cps2eCQfOoyV2SxR&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-</html>
 
