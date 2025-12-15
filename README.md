@@ -1,7 +1,7 @@
 <h1 align="center">MercadoLibre Analysis Tool</h1>
 
 <h2>Introduction</h2>
-This is a frontend made in python using the streamlit module, it was used only for testing, as a backend we used aws services such as: APIgateway, lambda, RDS, S3, eventBridge.
+This is a frontend made in python using the streamlit module, it was used only for testing, as a backend I used aws services such as: APIgateway, lambda, RDS, S3, eventBridge.
 
 <h2>Deployment</h2>
 <pre>
